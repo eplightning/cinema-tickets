@@ -23,12 +23,15 @@ CREATE TABLE movies (
 CREATE TABLE sessions (
   movie_id uuid,
   cinema_id uuid,
-  date timestamp,
+  date date,
   id uuid,
+  time time,
   hall_name text,
   hall_capacity int,
-  PRIMARY KEY ((movie_id), cinema_id, date, id)
+  PRIMARY KEY ((movie_id), date, cinema_id, id)
 );
+
+CREATE INDEX ON sessions (id);
 
 CREATE TABLE tickets (
   session_id uuid,

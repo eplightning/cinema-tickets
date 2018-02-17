@@ -37,44 +37,20 @@
     <a>kino #2</a>
     <a>kino #3</a>
   </p>
-  <a class="panel-block" href="#">
+  {% for session in sessions %}
+  <a class="panel-block" href="{{ url_for('.show_tickets', id=session.id) }}">
     <span class="panel-icon">
       <i class="fas fa-film"></i>
     </span>
-    <time datetime="">22 luty 2018;
-      <strong>13:30</strong>
+    <time datetime="">
+      <strong>{{ session.time.time().strftime('%H:%M') }}</strong>
     </time>
     &nbsp;
     <div class="tags has-addons">
-      <span class="tag">Sala</span>
+      <span class="tag">{{ session.hall_name }}</span>
       <span class="tag is-primary">Nazwa sali</span>
     </div>
   </a>
-  <a class="panel-block" href="#">
-    <span class="panel-icon">
-      <i class="fas fa-film"></i>
-    </span>
-    <time datetime="">22 luty 2018;
-      <strong>13:30</strong>
-    </time>
-    &nbsp;
-    <div class="tags has-addons">
-      <span class="tag">Sala</span>
-      <span class="tag is-primary">Nazwa sali</span>
-    </div>
-  </a>
-  <a class="panel-block" href="#">
-    <span class="panel-icon">
-      <i class="fas fa-film"></i>
-    </span>
-    <time datetime="">22 luty 2018;
-      <strong>13:30</strong>
-    </time>
-    &nbsp;
-    <div class="tags has-addons">
-      <span class="tag">Sala</span>
-      <span class="tag is-primary">Nazwa sali</span>
-    </div>
-  </a>
+  {% endfor %}
 </nav>
 {% endblock %}
