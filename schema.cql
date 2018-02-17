@@ -7,13 +7,13 @@ CREATE KEYSPACE cinemadb
 USE cinemadb;
 
 CREATE TABLE cinemas (
-  id text,
+  id uuid,
   name text,
   PRIMARY KEY (id)
 );
 
 CREATE TABLE movies (
-  id text,
+  id uuid,
   name text,
   description text,
   cover blob,
@@ -21,11 +21,10 @@ CREATE TABLE movies (
 );
 
 CREATE TABLE sessions (
-  movie_id text,
-  cinema_id text,
+  movie_id uuid,
+  cinema_id uuid,
   date timestamp,
   id uuid,
-  hall_id text,
   hall_name text,
   hall_capacity int,
   PRIMARY KEY ((movie_id), cinema_id, date, id)
