@@ -33,12 +33,32 @@ def get_sessions(movie, cinema, date):
 
     return sorted(db_session.execute(query, conditions), key=lambda x: x.time)
 
+def get_tickets_count(session):
+    conditions = [session]
+
+    query = """
+    SELECT COUNT(*) as count FROM tickets
+    WHERE session_id = %s
+    """
+
+    return list(db_session.execute(query, conditions))[0].count
+
 def get_tickets(session):
     conditions = [session]
 
     query = """
     SELECT * FROM tickets
     WHERE session_id = %s
+    """
+
+    return list(db_session.execute(query, conditions))
+
+def buy_ticket(session, user):
+    conditions = [session, user]
+
+    query = """
+    INSERT INTO tickets (session_id, timestamp, user)
+    VALUES (%s, toTimestamp(now()), %s);
     """
 
     return list(db_session.execute(query, conditions))

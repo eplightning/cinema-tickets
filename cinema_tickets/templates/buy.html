@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="field has-addons">
+    <div class="control">
+        <input class="input" type="text" placeholder="User name">
+    </div>
+    <div class="control">
+        <a href="{{ url_for('.buy', id=session, user='ja') }}" class="button">
+            Buy
+        </a>
+    </div>
+</div>
+{% endblock %}

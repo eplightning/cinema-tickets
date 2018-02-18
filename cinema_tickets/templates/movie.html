@@ -37,20 +37,33 @@
     <a>kino #2</a>
     <a>kino #3</a>
   </p>
-  {% for session in sessions %}
-  <a class="panel-block" href="{{ url_for('.show_tickets', id=session.id) }}">
-    <span class="panel-icon">
+  {% for session, tickets_count in sessions %}
+  <div class="panel-block columns is-multiline">
+    <div class="column is-narrow panel-icon">
       <i class="fas fa-film"></i>
-    </span>
-    <time datetime="">
+    </div>
+    <time class="column is-narrow" datetime="">
       <strong>{{ session.time.time().strftime('%H:%M') }}</strong>
     </time>
-    &nbsp;
-    <div class="tags has-addons">
-      <span class="tag">{{ session.hall_name }}</span>
-      <span class="tag is-primary">Nazwa sali</span>
+    <div class="column is-narrow tags has-addons">
+      <div class="tag">{{ session.hall_name }}</div>
+      <div class="tag is-primary">Nazwa sali</div>
     </div>
-  </a>
+
+    <div class="column is-narrow">
+      {{ tickets_count }}/{{ session.hall_capacity }}
+    </div>
+    <div class="column is-narrow">
+      <a class="button is-info" href="{{ url_for('.show_buy_ticket', id=session.id) }}">
+        Buy
+      </a>
+    </div>
+    <div class="column is-narrow">
+      <a class="button is-info" href="{{ url_for('.show_tickets', id=session.id) }}">
+        Show
+      </a>
+    </div>
+  </div>
   {% endfor %}
 </nav>
 {% endblock %}

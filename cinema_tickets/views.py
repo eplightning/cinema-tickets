@@ -15,6 +15,7 @@ def list_movies():
 @app.route('/movie/<uuid:id>')
 def show_movie(id):
     movie = get_movie(id)
+    tickets_count = get_tickets_count
     if not movie:
         abort(404)
 
@@ -22,9 +23,13 @@ def show_movie(id):
     cinema = request.args.get('cinema', None, uuid.UUID)
     sessions = get_sessions(id, cinema, date)
 
-    print(list(sessions))
+    sessions_list = []
+    for session in sessions:
+        sessions_list.append([session, get_tickets_count(session.id)])
+        
+    print(list(sessions_list))
 
-    return render_template('movie.html', movie=movie, sessions=sessions)
+    return render_template('movie.html', movie=movie, sessions=sessions_list, title='Movie')
 
 @app.route('/movie/<uuid:id>/cover')
 def movie_cover(id):
@@ -34,9 +39,20 @@ def movie_cover(id):
 
     return send_file(io.BytesIO(movie.cover), mimetype='image/jpeg')
 
-@app.route('/tickets/<uuid:id>')
+@app.route('/session/<uuid:id>')
 def show_tickets(id):
     tickets = get_tickets(id)
     print(list(tickets))
 
     return render_template('session.html', tickets=tickets, title='Session')
+
+@app.route('/session/<uuid:id>/buy/<string:user>')
+def buy(id, user):
+    buy_ticket(id, user)
+
+    return show_tickets(id)
+
+@app.route('/session/<uuid:id>/buy')
+def show_buy_ticket(id):
+
+    return render_template('buy.html', session=id, title='Buy')
