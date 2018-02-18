@@ -29,7 +29,11 @@
     <div class="hero-body">
       <div class="container">
         <h1 class="title">
-          Movies
+          {% if title is not none %}
+            {{title}}
+          {% else %}
+            Movies
+          {%endif %}
         </h1>
       </div>
     </div>

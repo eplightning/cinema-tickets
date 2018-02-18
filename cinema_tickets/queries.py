@@ -33,5 +33,12 @@ def get_sessions(movie, cinema, date):
 
     return sorted(db_session.execute(query, conditions), key=lambda x: x.time)
 
+def get_tickets(session):
+    conditions = [session]
 
+    query = """
+    SELECT * FROM tickets
+    WHERE session_id = %s
+    """
 
+    return list(db_session.execute(query, conditions))

@@ -36,4 +36,7 @@ def movie_cover(id):
 
 @app.route('/tickets/<uuid:id>')
 def show_tickets(id):
-    return ''
+    tickets = get_tickets(id)
+    print(list(tickets))
+
+    return render_template('session.html', tickets=tickets, title='Session')
