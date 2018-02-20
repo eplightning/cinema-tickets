@@ -35,8 +35,8 @@ CREATE INDEX ON sessions (id);
 
 CREATE TABLE tickets (
   session_id uuid,
-  timestamp timestamp,
+  id timeuuid,
   user text,
-  id uuid,
-  PRIMARY KEY ((session_id), user, id, timestamp)
+  timestamp timestamp,
+  PRIMARY KEY ((session_id), id, user)
 );

@@ -59,12 +59,11 @@ def buy(session, id):
         abort(400)
 
     timestamp = time.time()
-    remove_obsolete_ticket_rows(session, user, id, timestamp)
     buy_ticket(session, user, id, timestamp)
 
-    return redirect(url_for(show_tickets, id=session))
+    return redirect(url_for('.show_tickets', id=session))
 
 @app.route('/session/<uuid:id>/buy')
 def show_buy_ticket(id):
 
-    return render_template('buy.html', session=id, id=uuid.uuid4(), title='Buy')
+    return render_template('buy.html', session=id, id=uuid.uuid1(), title='Buy')

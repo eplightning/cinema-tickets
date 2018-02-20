@@ -54,28 +54,12 @@ def get_tickets(session):
 
     return list(db_session.execute(query, conditions))
 
-def remove_obsolete_ticket_rows(session, user, id, timestamp):
-    decreasing_timestamp = 2000000000000000 - math.trunc(timestamp * 1000000)
-    conditions = [decreasing_timestamp, session, user, id, datetime.fromtimestamp(timestamp)]
-
-    query = """
-    DELETE FROM tickets USING TIMESTAMP %s
-    WHERE session_id = %s AND user = %s AND id = %s AND timestamp > %s
-    """
-
-    res = db_session.execute(query, conditions, trace=True)
-
-    trace = res.get_query_trace()
-    for event in trace.events:
-        if event.description.startswith('Parsing'):
-            print(event.description)
-
 def buy_ticket(session, user, id, timestamp):
     decreasing_timestamp = 2000000000000000 - math.trunc(timestamp * 1000000)
-    conditions = [session, user, id, datetime.fromtimestamp(timestamp), decreasing_timestamp]
+    conditions = [session, id, user, datetime.fromtimestamp(timestamp), decreasing_timestamp]
 
     query = """
-    INSERT INTO tickets (session_id, user, id, timestamp)
+    INSERT INTO tickets (session_id, id, user, timestamp)
     VALUES (%s, %s, %s, %s)
     USING TIMESTAMP %s
     """
