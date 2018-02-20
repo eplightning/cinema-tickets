@@ -26,10 +26,13 @@ def show_movie(id):
     sessions_list = []
     for session in sessions:
         sessions_list.append([session, get_tickets_count(session.id)])
-        
+
     print(list(sessions_list))
 
-    return render_template('movie.html', movie=movie, sessions=sessions_list, title='Movie')
+    return render_template('movie.html',
+        movie=movie, sessions=sessions_list, cinemas=get_cinemas(), title='Movie',
+        cinema=cinema, date=date, path=request.path
+    )
 
 @app.route('/movie/<uuid:id>/cover')
 def movie_cover(id):
