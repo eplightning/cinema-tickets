@@ -1,20 +1,20 @@
 {% extends 'layout.html' %} {% block body %}
-<div class="panel-heading columns is-multiline">
-    <span class="column">Nr</span>
-    &nbsp;
-    <span class="column">User</span>
-    &nbsp;
-    <span class="column">Time</span>
-</div>
-{% for ticket in tickets %}
-<div class="panel-block columns is-multiline">
-    <span class="column">{{ loop.index }}.</span>
-    &nbsp;
-    <span class="column">{{ ticket.user }}</span>
-    &nbsp;
-    <time class="column" datetime="">
-        <strong>{{ ticket.timestamp.strftime('%d-%m-%Y; %H:%M:%S:%f') }}</strong>
-    </time>
-</div>
-{% endfor %}
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><abbr title="Number">Nr</abbr></th>
+      <th>User</th>
+      <th><abbr title="Timestamp">Time</abbr></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ticket in tickets %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ ticket.user }}</td>
+      <td>{{ ticket.timestamp.strftime('%d-%m-%Y; %H:%M:%S:%f') }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
