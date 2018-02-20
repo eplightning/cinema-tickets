@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from datetime import date as pydate
 from cinema_tickets.db import db_session
+import math
 
 def get_movies():
     return db_session.execute('SELECT * FROM movies')
@@ -53,12 +54,34 @@ def get_tickets(session):
 
     return list(db_session.execute(query, conditions))
 
-def buy_ticket(session, user):
-    conditions = [session, user]
+def remove_obsolete_ticket_rows(session, user, id, timestamp):
+    decreasing_timestamp = 2000000000000000 - math.trunc(timestamp * 1000000)
+    conditions = [decreasing_timestamp, session, user, id, datetime.fromtimestamp(timestamp)]
 
     query = """
-    INSERT INTO tickets (session_id, timestamp, user)
-    VALUES (%s, toTimestamp(now()), %s);
+    DELETE FROM tickets USING TIMESTAMP %s
+    WHERE session_id = %s AND user = %s AND id = %s AND timestamp > %s
     """
 
-    return list(db_session.execute(query, conditions))
+    res = db_session.execute(query, conditions, trace=True)
+
+    trace = res.get_query_trace()
+    for event in trace.events:
+        if event.description.startswith('Parsing'):
+            print(event.description)
+
+def buy_ticket(session, user, id, timestamp):
+    decreasing_timestamp = 2000000000000000 - math.trunc(timestamp * 1000000)
+    conditions = [session, user, id, datetime.fromtimestamp(timestamp), decreasing_timestamp]
+
+    query = """
+    INSERT INTO tickets (session_id, user, id, timestamp)
+    VALUES (%s, %s, %s, %s)
+    USING TIMESTAMP %s
+    """
+
+    res = db_session.execute(query, conditions, trace=True)
+    trace = res.get_query_trace()
+    for event in trace.events:
+        if event.description.startswith('Parsing'):
+            print(event.description)

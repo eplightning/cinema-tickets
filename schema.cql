@@ -37,5 +37,6 @@ CREATE TABLE tickets (
   session_id uuid,
   timestamp timestamp,
   user text,
-  PRIMARY KEY ((session_id), timestamp)
+  id uuid,
+  PRIMARY KEY ((session_id), user, id, timestamp)
 );

@@ -1,8 +1,10 @@
 from cinema_tickets.app import app
 from cinema_tickets.db import db_session
 from cinema_tickets.queries import *
-from flask import render_template, send_file, abort, request
+from flask import render_template, send_file, abort, request, redirect, url_for
 from datetime import datetime, timedelta
+import math
+import time
 import io
 import uuid
 
@@ -49,13 +51,20 @@ def show_tickets(id):
 
     return render_template('session.html', tickets=tickets, title='Session')
 
-@app.route('/session/<uuid:id>/buy/<string:user>')
-def buy(id, user):
-    buy_ticket(id, user)
+@app.route('/session/<uuid:session>/buy/<uuid:id>', methods=['POST'])
+def buy(session, id):
+    user = request.form['user']
 
-    return show_tickets(id)
+    if not user:
+        abort(400)
+
+    timestamp = time.time()
+    remove_obsolete_ticket_rows(session, user, id, timestamp)
+    buy_ticket(session, user, id, timestamp)
+
+    return redirect(url_for(show_tickets, id=session))
 
 @app.route('/session/<uuid:id>/buy')
 def show_buy_ticket(id):
 
-    return render_template('buy.html', session=id, title='Buy')
+    return render_template('buy.html', session=id, id=uuid.uuid4(), title='Buy')

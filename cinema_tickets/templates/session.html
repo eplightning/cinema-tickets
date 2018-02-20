@@ -1,4 +1,4 @@
-{% extends 'layout.html' %} {% block body %} 
+{% extends 'layout.html' %} {% block body %}
 <div class="panel-heading columns is-multiline">
     <span class="column">Nr</span>
     &nbsp;
@@ -13,7 +13,7 @@
     <span class="column">{{ ticket.user }}</span>
     &nbsp;
     <time class="column" datetime="">
-        <strong>{{ ticket.timestamp.time().strftime('%H:%M:%S:%f') }}</strong>
+        <strong>{{ ticket.timestamp.strftime('%d-%m-%Y; %H:%M:%S:%f') }}</strong>
     </time>
 </div>
 {% endfor %}

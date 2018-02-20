@@ -1,13 +1,15 @@
 {% extends 'layout.html' %}
 {% block body %}
-<div class="field has-addons">
-    <div class="control">
-        <input class="input" type="text" placeholder="User name">
-    </div>
-    <div class="control">
-        <a href="{{ url_for('.buy', id=session, user='ja') }}" class="button">
-            Buy
-        </a>
-    </div>
-</div>
+<form action="{{ url_for('.buy', session=session, id=id) }}" method="post">
+  <div class="field has-addons">
+      <div class="control">
+          <input name="user" class="input" type="text" placeholder="User name">
+      </div>
+      <div class="control">
+          <button type="submit" class="button">
+              Buy
+          </a>
+      </div>
+  </div>
+</form>
 {% endblock %}
