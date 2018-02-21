@@ -42,7 +42,11 @@ def get_tickets_count(session):
     WHERE session_id = %s
     """
 
-    return db_session.execute(query, conditions)[0].sold_count
+    res = db_session.execute(query, conditions)
+    for r in res:
+        return r.sold_count
+
+    return 0
 
 def get_tickets(session):
     conditions = [session]

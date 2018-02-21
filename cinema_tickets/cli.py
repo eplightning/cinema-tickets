@@ -83,11 +83,4 @@ def add_session(movie, date, time, cinema, hall_name, hall_cap):
         (movie, date, cinema, time)
     )
 
-    db_session.execute(
-        """
-        UPDATE tickets_counter SET sold_count = sold_count + 0 WHERE session_id = %s
-        """,
-        ([session[0].id])
-    )
-
     click.echo('Session added')
