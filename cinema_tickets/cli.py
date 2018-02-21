@@ -2,6 +2,7 @@ from cinema_tickets.app import app
 from cinema_tickets.db import db_session
 import click
 from datetime import datetime, date as pydate
+import uuid
 
 @app.cli.command()
 @click.option('--name', prompt=True, help='Movie name')
@@ -73,6 +74,20 @@ def add_session(movie, date, time, cinema, hall_name, hall_cap):
         VALUES (%s, %s, %s, %s, uuid(), %s, %s)
         """,
         (movie, date, time, cinema, hall_cap, hall_name)
+    )
+
+    session = db_session.execute(
+        """
+        SELECT id FROM sessions where movie_id = %s and date = %s and cinema_id = %s and time = %s
+        """,
+        (movie, date, cinema, time)
+    )
+
+    db_session.execute(
+        """
+        UPDATE tickets_counter SET sold_count = sold_count + 0 WHERE session_id = %s
+        """,
+        ([session[0].id])
     )
 
     click.echo('Session added')

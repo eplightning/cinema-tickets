@@ -38,11 +38,11 @@ def get_tickets_count(session):
     conditions = [session]
 
     query = """
-    SELECT COUNT(*) as count FROM tickets
+    SELECT sold_count FROM tickets_counter
     WHERE session_id = %s
     """
 
-    return list(db_session.execute(query, conditions))[0].count
+    return db_session.execute(query, conditions)[0].sold_count
 
 def get_tickets(session):
     conditions = [session]
@@ -69,3 +69,10 @@ def buy_ticket(session, user, id, timestamp):
     for event in trace.events:
         if event.description.startswith('Parsing'):
             print(event.description)
+        
+    db_session.execute(
+        """
+        UPDATE tickets_counter SET sold_count = sold_count + 1 WHERE session_id = %s
+        """,
+        ([session])
+    )
