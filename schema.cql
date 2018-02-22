@@ -28,7 +28,18 @@ CREATE TABLE sessions (
   time time,
   hall_name text,
   hall_capacity int,
-  PRIMARY KEY ((movie_id), date, cinema_id, time, id)
+  PRIMARY KEY ((movie_id), date, time, id)
+);
+
+CREATE TABLE sessions_by_cinema (
+  movie_id uuid,
+  cinema_id uuid,
+  date date,
+  id uuid,
+  time time,
+  hall_name text,
+  hall_capacity int,
+  PRIMARY KEY ((movie_id, cinema_id), date, time, id)
 );
 
 CREATE INDEX ON sessions (id);
@@ -42,7 +53,8 @@ CREATE TABLE tickets (
 );
 
 CREATE TABLE tickets_counter (
+  movie_id uuid,
   session_id uuid,
   sold_count counter,
-  PRIMARY KEY (session_id)
+  PRIMARY KEY ((movie_id), session_id)
 );

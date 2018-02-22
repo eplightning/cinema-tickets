@@ -10,29 +10,22 @@ import uuid
 
 @app.route('/')
 def list_movies():
-    movies = list(get_movies())
+    movies = get_movies()
 
     return render_template('index.html', movies=movies)
 
 @app.route('/movie/<uuid:id>')
 def show_movie(id):
     movie = get_movie(id)
-    tickets_count = get_tickets_count
     if not movie:
         abort(404)
 
     date = request.args.get('date', datetime.now(), lambda x: datetime.strptime(x, '%Y-%m-%d'))
     cinema = request.args.get('cinema', None, uuid.UUID)
-    sessions = get_sessions(id, cinema, date)
-
-    sessions_list = []
-    for session in sessions:
-        sessions_list.append([session, get_tickets_count(session.id)])
-
-    print(list(sessions_list))
+    sessions = get_sessions_with_counters(id, cinema, date)
 
     return render_template('movie.html',
-        movie=movie, sessions=sessions_list, cinemas=get_cinemas(), title='Movie',
+        movie=movie, sessions=sessions, cinemas=get_cinemas(), title='Movie',
         cinema=cinema, date=date, path=request.path
     )
 
@@ -47,7 +40,6 @@ def movie_cover(id):
 @app.route('/session/<uuid:id>')
 def show_tickets(id):
     tickets = get_tickets(id)
-    print(list(tickets))
 
     return render_template('session.html', tickets=tickets, title='Session')
 
@@ -59,11 +51,13 @@ def buy(session, id):
         abort(400)
 
     timestamp = time.time()
-    buy_ticket(session, user, id, timestamp)
+    result = buy_ticket(session, user, id, timestamp)
+
+    if not result:
+        abort(500)
 
     return redirect(url_for('.show_tickets', id=session))
 
 @app.route('/session/<uuid:id>/buy')
 def show_buy_ticket(id):
-
     return render_template('buy.html', session=id, id=uuid.uuid1(), title='Buy')

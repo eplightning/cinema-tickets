@@ -68,19 +68,22 @@ def add_session(movie, date, time, cinema, hall_name, hall_cap):
     if time is None:
         time = datetime.now().strftime('%H:%M') + ':00'
 
+    sess_uuid = uuid.uuid4()
+
     db_session.execute(
         """
         INSERT INTO sessions (movie_id, date, time, cinema_id, id, hall_capacity, hall_name)
-        VALUES (%s, %s, %s, %s, uuid(), %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """,
-        (movie, date, time, cinema, hall_cap, hall_name)
+        (movie, date, time, cinema, sess_uuid, hall_cap, hall_name)
     )
 
-    session = db_session.execute(
+    db_session.execute(
         """
-        SELECT id FROM sessions where movie_id = %s and date = %s and cinema_id = %s and time = %s
+        INSERT INTO sessions_by_cinema (movie_id, date, time, cinema_id, id, hall_capacity, hall_name)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """,
-        (movie, date, cinema, time)
+        (movie, date, time, cinema, sess_uuid, hall_cap, hall_name)
     )
 
     click.echo('Session added')
