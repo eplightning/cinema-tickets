@@ -1,7 +1,11 @@
 from cinema_tickets.app import app
 from cinema_tickets.db import db_session
+from cinema_tickets.queries import buy_ticket
 import click
 from datetime import datetime, date as pydate
+import math
+import time
+import io
 import uuid
 
 @app.cli.command()
@@ -34,6 +38,18 @@ def add_cinema(name):
     )
 
     click.echo('Cinema added')
+
+@app.cli.command()
+@click.option('--session', help='Session UUID')
+@click.option('--times', default=100, help='how many times')
+@click.option('--user', default='User', help='Session UUID')
+def stress_test(session, times, user):
+    session = uuid.UUID(session)
+
+    for i in range(0, 100):
+        print('Kupowanie biletu {}'.format(i))
+        timestamp = time.time()
+        buy_ticket(session, user, uuid.uuid1(), timestamp)
 
 @app.cli.command()
 @click.option('--movie', help='Movie UUID')
