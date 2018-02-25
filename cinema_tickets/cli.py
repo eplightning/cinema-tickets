@@ -1,5 +1,6 @@
 from cinema_tickets.app import app
 from cinema_tickets.db import db_session
+from cinema_tickets.db_statements import *
 from cinema_tickets.queries import buy_ticket
 import click
 from datetime import datetime, date as pydate
@@ -18,24 +19,14 @@ def add_movie(name, cover, description):
             contents = f.read()
             cover = bytearray(contents)
 
-    db_session.execute(
-        """
-        INSERT INTO movies (id, name, cover, description) VALUES (uuid(), %s, %s, %s)
-        """,
-        (name, cover, description)
-    )
+    db_session.execute(addMovie, (name, cover, description))
 
     click.echo('Movie added')
 
 @app.cli.command()
 @click.option('--name', default='Name', help='Cinema name')
 def add_cinema(name):
-    db_session.execute(
-        """
-        INSERT INTO cinemas (id, name) VALUES (uuid(), %s)
-        """,
-        (name,)
-    )
+    db_session.execute(addCinema, (name,))
 
     click.echo('Cinema added')
 
@@ -61,21 +52,25 @@ def stress_test(session, times, user):
 def add_session(movie, date, time, cinema, hall_name, hall_cap):
     # get first cinema if not specified
     if cinema is None:
-        cinema = db_session.execute('SELECT * FROM cinemas')
+        cinema = db_session.execute(getCinemas)
 
         if not cinema:
             raise 'No cinemas'
 
         cinema = cinema[0].id
+    else:
+        cinema = uuid.UUID(cinema)
 
     # get first movie if not specified
     if movie is None:
-        movie = db_session.execute('SELECT * FROM movies')
+        movie = db_session.execute(getMovies)
 
         if not movie:
             raise 'Movie not found'
 
         movie = movie[0].id
+    else:
+        movie = uuid.UUID(movie)
 
     # default date to now
     if date is None:
@@ -86,20 +81,7 @@ def add_session(movie, date, time, cinema, hall_name, hall_cap):
 
     sess_uuid = uuid.uuid4()
 
-    db_session.execute(
-        """
-        INSERT INTO sessions (movie_id, date, time, cinema_id, id, hall_capacity, hall_name)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """,
-        (movie, date, time, cinema, sess_uuid, hall_cap, hall_name)
-    )
-
-    db_session.execute(
-        """
-        INSERT INTO sessions_by_cinema (movie_id, date, time, cinema_id, id, hall_capacity, hall_name)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """,
-        (movie, date, time, cinema, sess_uuid, hall_cap, hall_name)
-    )
+    db_session.execute(addSession, (movie, date, time, cinema, sess_uuid, hall_cap, hall_name))
+    db_session.execute(addCinemaSession, (movie, date, time, cinema, sess_uuid, hall_cap, hall_name))
 
     click.echo('Session added')
