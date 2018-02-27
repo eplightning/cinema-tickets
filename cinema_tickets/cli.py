@@ -2,6 +2,7 @@ from cinema_tickets.app import app
 from cinema_tickets.db import db_session
 from cinema_tickets.db_statements import *
 from cinema_tickets.queries import buy_ticket, get_session, get_tickets
+from cinema_tickets.stress import stress_process
 import click
 from datetime import datetime, date as pydate
 import math
@@ -34,15 +35,6 @@ def add_cinema(name):
     db_session.execute(addCinema, (name,))
 
     click.echo('Cinema added')
-
-def stress_process(session, times, user, pipe):
-    with app.app_context():
-        for i in range(0, times):
-            pipe.send('Kupowanie biletu {}'.format(i))
-            timestamp = time.time()
-            buy_ticket(session, user, uuid.uuid1(), timestamp)
-
-        pipe.close()
 
 @app.cli.command()
 @click.option('--session', help='Session UUID', prompt=True)
