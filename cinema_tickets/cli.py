@@ -60,7 +60,7 @@ def stress_test(session, proc, times, user):
 
     for i in range(0, proc):
         pipe_read, pipe_write = Pipe(duplex=False)
-        process = Process(target=stress_process, args=(session, times, user, pipe_write))
+        process = Process(target=stress_process, args=(session, times, user, i, pipe_write))
         pipes.append(pipe_read)
         processes.append(process)
         process.start()
