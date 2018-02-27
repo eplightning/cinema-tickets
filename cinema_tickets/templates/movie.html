@@ -53,7 +53,7 @@
       Show
     </a>
     &nbsp;
-    <a class="button is-info is-small" {% if tickets_count >= session.hall_capacity %}disabled{% else %}href="{{ url_for('.show_buy_ticket', id=session.id) }}"{% endif %}>
+    <a class="button is-info is-small" href="{{ url_for('.show_buy_ticket', id=session.id) }}">
       Buy
     </a>
     &nbsp;

@@ -10,7 +10,7 @@ with app.app_context():
     getCinemaSessions = db_session.prepare('SELECT * FROM sessions_by_cinema WHERE movie_id = ? AND date = ? AND cinema_id = ?')
     getTicketsCount = db_session.prepare('SELECT sold_count, session_id FROM tickets_counter WHERE movie_id = ?')
     getTickets = db_session.prepare('SELECT * FROM tickets WHERE session_id = ? LIMIT ?')
-    buyTicket = db_session.prepare('INSERT INTO tickets (session_id, id, user, timestamp) VALUES (?, ?, ?, ?) USING TIMESTAMP ?')
+    buyTicket = db_session.prepare('INSERT INTO tickets (session_id, id, user, timestamp) VALUES (?, ?, ?, ?)')
     updateTicketCounter = db_session.prepare('UPDATE tickets_counter SET sold_count = sold_count + 1 WHERE movie_id = ? AND session_id = ?')
     addMovie = db_session.prepare('INSERT INTO movies (id, name, cover, description) VALUES (uuid(), ?, ?, ?)')
     addCinema = db_session.prepare('INSERT INTO cinemas (id, name) VALUES (uuid(), ?)')

@@ -69,8 +69,9 @@ def buy_ticket(session, user, id, timestamp):
         return False
 
     # i mamy first write wins
-    decreasing_timestamp = 2000000000000000 - math.trunc(timestamp * 1000000)
-    conditions = [session, id, user, datetime.fromtimestamp(timestamp), decreasing_timestamp]
+    # decreasing_timestamp = 2000000000000000 - math.trunc(timestamp * 1000000)
+    # conditions = [session, id, user, datetime.fromtimestamp(timestamp), decreasing_timestamp]
+    conditions = [session, id, user, datetime.fromtimestamp(timestamp)]
 
     res = db_session.execute(buyTicket, conditions, trace=True)
     trace = res.get_query_trace()
