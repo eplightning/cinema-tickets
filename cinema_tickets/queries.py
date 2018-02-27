@@ -73,12 +73,7 @@ def buy_ticket(session, user, id, timestamp):
     # conditions = [session, id, user, datetime.fromtimestamp(timestamp), decreasing_timestamp]
     conditions = [session, id, user, datetime.fromtimestamp(timestamp)]
 
-    res = db_session.execute(buyTicket, conditions, trace=True)
-    trace = res.get_query_trace()
-    for event in trace.events:
-        if event.description.startswith('Parsing'):
-            print(event.description)
-
+    db_session.execute(buyTicket, conditions)
     db_session.execute(updateTicketCounter, (session_data.movie_id, session))
 
     return True
